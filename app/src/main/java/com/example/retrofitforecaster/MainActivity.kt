@@ -3,6 +3,7 @@ package com.example.retrofitforecaster
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -119,26 +120,32 @@ class MainActivity : AppCompatActivity() {
 }
 
 class ListAdapter(private val context: Context, private val list: Array<List>) : RecyclerView.Adapter<ListAdapter.Holder>(){
+    private val TYPE_HOT = 1
+    private val TYPE_COLD = 2
     class Holder(view: View): RecyclerView.ViewHolder(view){
         val dateTime: TextView = view.findViewById(R.id.txt_date)
         val temperature: TextView = view.findViewById(R.id.txt_C)
     }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
-
-        var view = LayoutInflater.from(context).inflate(R.layout.item_layout, parent, false)
-
-
-        /*
-        if(list[].main.temp.minus(272.15) <= 0){
-             view = LayoutInflater.from(context).inflate(R.layout.item_layout_cold, parent, false)
+        if(viewType == TYPE_HOT) {
+            val view = LayoutInflater.from(context).inflate(R.layout.item_layout, parent, false)
+            return Holder(view)
+        } else {
+            val view = LayoutInflater.from(context).inflate(R.layout.item_layout_cold, parent, false)
+            return Holder(view)
         }
-         */
-        return Holder(view)
     }
 
     override fun getItemCount(): Int {
         return list.count()
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return if (list.get(position).main.temp.minus(272.15) <= 0) {
+            TYPE_COLD
+        } else {
+            TYPE_HOT
+        }
     }
 
     @SuppressLint("SetTextI18n")
